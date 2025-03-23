@@ -2,7 +2,7 @@
 
 A modern weather forecast application built with React that provides current weather conditions, hourly forecasts, and 7-day weather predictions. The app features a clean UI with dark/light mode, temperature unit conversion, and voice search capabilities.
 
-![Weather Forecast App Screenshot](/weatherapp-screenshot.png)
+![Weather Forecast App Screenshot](./public/weatherapp-screenshot.png)
 
 ## Features
 
