@@ -3,7 +3,7 @@ import { Search, Wind, Droplet, Thermometer, MapPin, Sunrise, Sunset, ChevronLef
 import { ToastContainer, toast } from 'react-toastify';
 
 function Hero() {
-    const weather_api_key = 'dd011cfb0c6a422c97660042252303';
+    const weather_api_key = '6146c7a50abb417f80f63318252303';
     const [location, setLocation] = useState("");
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(false);
