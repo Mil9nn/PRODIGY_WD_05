@@ -29,8 +29,8 @@ Follow these steps to set up and run the project locally:
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Mil9nn/PRODIGY_WD_05.git
+cd weather-app
 ```
 
 ### 2. Install dependencies
