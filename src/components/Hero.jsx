@@ -3,14 +3,14 @@ import { Search, Wind, Droplet, Thermometer, MapPin, Sunrise, Sunset, ChevronLef
 import { ToastContainer, toast } from 'react-toastify';
 
 function Hero() {
-    const weather_api_key = '6146c7a50abb417f80f63318252303';
+    const weather_api_key = import.meta.env.VITE_WEATHER_API_KEY;
     const [location, setLocation] = useState("");
     const [weatherData, setWeatherData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [tempUnit, setTempUnit] = useState("C"); // C for Celsius, F for Fahrenheit
     const [activeDay, setActiveDay] = useState(0);
     const [darkMode, setDarkMode] = useState(false);
-    
+
     // Check for dark mode preference on load
     useEffect(() => {
         const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -21,11 +21,11 @@ function Hero() {
     const toggleTempUnit = () => {
         setTempUnit(tempUnit === "C" ? "F" : "C");
     };
-    
+
     // Convert temperature based on selected unit
     const convertTemp = (temp) => {
         if (tempUnit === "F") {
-            return Math.round((temp * 9/5) + 32);
+            return Math.round((temp * 9 / 5) + 32);
         }
         return Math.round(temp);
     };
@@ -40,6 +40,7 @@ function Hero() {
                     const lon = position.coords.longitude;
                     const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${weather_api_key}&q=${lat},${lon}&days=7&aqi=no&alerts=no`);
                     const data = await response.json();
+                    console.log(data);
                     setWeatherData(data);
                     toast.success("Found your location!");
                     setLoading(false);
@@ -104,14 +105,6 @@ function Hero() {
         return date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
     };
 
-    // Format sunrise/sunset time
-    const formatSunTime = (timeStr) => {
-        if (!timeStr) return "N/A";
-        const [time] = timeStr.split(" ")[1].split(":");
-        const hour = parseInt(time);
-        return `${hour > 12 ? hour - 12 : hour}${hour >= 12 ? 'PM' : 'AM'}`;
-    };
-
     const handleVoiceSearch = () => {
         // Check if the browser supports speech recognition
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -121,10 +114,10 @@ function Hero() {
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        
+
         recognition.lang = "en-US";
         recognition.continuous = false;
-        
+
         // Show toast when listening starts
         const toastId = toast.info("🎤 Listening for voice input...", {
             autoClose: false,
@@ -175,14 +168,14 @@ function Hero() {
     // Get background gradient based on time and weather condition
     const getBackgroundClass = () => {
         if (!weatherData) return darkMode ? "bg-gradient-to-br from-gray-900 to-indigo-900" : "bg-gradient-to-br from-blue-100 to-purple-100";
-        
+
         const condition = weatherData.current.condition.text.toLowerCase();
         const isDay = weatherData.current.is_day === 1;
-        
+
         if (darkMode) {
             return "bg-gradient-to-br from-gray-900 to-indigo-900";
         }
-        
+
         if (condition.includes("rain") || condition.includes("drizzle")) {
             return isDay ? "bg-gradient-to-br from-blue-200 to-gray-300" : "bg-gradient-to-br from-blue-900 to-gray-800";
         } else if (condition.includes("cloud")) {
@@ -208,7 +201,7 @@ function Hero() {
                 pauseOnHover
                 theme={darkMode ? "dark" : "light"}
             />
-            
+
             <div className="w-full max-w-3xl mx-auto">
                 {/* Header with toggle switch */}
                 <div className="flex justify-between items-center mb-6">
@@ -216,18 +209,18 @@ function Hero() {
                         Weather Forecast
                     </h1>
                     <div className="flex items-center gap-3">
-                        <button 
-                            onClick={toggleTempUnit} 
-                            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-pointer ${darkMode 
-                                ? "bg-gray-700 text-white hover:bg-gray-600" 
+                        <button
+                            onClick={toggleTempUnit}
+                            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-pointer ${darkMode
+                                ? "bg-gray-700 text-white hover:bg-gray-600"
                                 : "bg-white text-gray-800 hover:bg-gray-100 border border-gray-200"}`}
                         >
                             °{tempUnit}
                         </button>
-                        <button 
-                            onClick={toggleDarkMode} 
-                            className={`p-2 rounded-full cursor-pointer ${darkMode 
-                                ? "bg-gray-700 text-yellow-300" 
+                        <button
+                            onClick={toggleDarkMode}
+                            className={`p-2 rounded-full cursor-pointer ${darkMode
+                                ? "bg-gray-700 text-yellow-300"
                                 : "bg-blue-100 text-gray-800"}`}
                         >
                             {darkMode ? "☀️" : "🌙"}
@@ -240,8 +233,8 @@ function Hero() {
                         <input
                             onChange={handleLocationChange}
                             onKeyPress={handleKeyPress}
-                            className={`w-full px-4 py-3 pr-10 rounded-lg transition-all ${darkMode 
-                                ? "bg-gray-800 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500" 
+                            className={`w-full px-4 py-3 pr-10 rounded-lg transition-all ${darkMode
+                                ? "bg-gray-800 border-gray-600 text-white focus:ring-blue-500 focus:border-blue-500"
                                 : "border border-[#006980] focus:ring-blue-500 focus:border-blue-500"}`}
                             type="text"
                             name="location"
@@ -252,12 +245,12 @@ function Hero() {
                     </div>
                     <button
                         onClick={handleClick}
-                        className="w-full md:w-auto px-6 py-3 bg-[#006980] cursor-pointer text-white font-medium rounded-lg shadow hover:bg-[#00546a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all"
+                        className="w-full md:w-auto px-6 py-3 bg-[#006980] cursor-pointer text-white font-medium rounded-full shadow hover:bg-[#00546a] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all"
                     >
                         Fetch
                     </button>
-                    <button 
-                        className="flex items-center bg-[#8800ff] p-3 px-4 rounded-full text-white cursor-pointer hover:bg-[#7000cc] transition-colors" 
+                    <button
+                        className="flex gap-1 items-center justify-center w-full md:w-auto px-6 py-3 bg-[#8800ff] cursor-pointer text-white font-medium rounded-full shadow hover:bg-[#b700ff] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all"
                         onClick={handleVoiceSearch}
                     >
                         <span className="font-semibold mr-1">Voice</span>
@@ -272,7 +265,7 @@ function Hero() {
                 <div className="flex justify-center mb-6">
                     <button
                         onClick={handleGetCurrentLocation}
-                        className="flex items-center gap-2 px-6 py-2 bg-[#166b7e] text-white font-medium rounded-lg shadow hover:bg-[#0d5563] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-all cursor-pointer"
+                        className="flex items-center gap-2 px-6 py-2 bg-[#166b7e] text-white font-medium rounded-full shadow hover:bg-[#0d5563] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-all cursor-pointer"
                     >
                         <MapPin size={18} />
                         Use My Current Location
@@ -325,7 +318,7 @@ function Hero() {
                                         <div>
                                             <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Sunrise</p>
                                             <p className={`font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
-                                                {formatSunTime(weatherData.forecast.forecastday[0].astro.sunrise)}
+                                                {weatherData.forecast.forecastday[0].astro.sunrise}
                                             </p>
                                         </div>
                                     </div>
@@ -334,7 +327,7 @@ function Hero() {
                                         <div>
                                             <p className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>Sunset</p>
                                             <p className={`font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
-                                                {formatSunTime(weatherData.forecast.forecastday[0].astro.sunset)}
+                                                {weatherData.forecast.forecastday[0].astro.sunset}
                                             </p>
                                         </div>
                                     </div>
@@ -386,60 +379,6 @@ function Hero() {
 
             {weatherData && weatherData.forecast ? (
                 <div className="mt-6 w-full max-w-3xl">
-                    {/* Hourly Forecast */}
-                    <div className="mb-6">
-                        <div className="flex justify-between items-center mb-3">
-                            <h2 className={`text-xl font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
-                                {activeDay === 0 ? "Today's Forecast" : `Forecast for ${formatDate(weatherData.forecast.forecastday[activeDay].date)}`}
-                            </h2>
-                            <div className="flex gap-2">
-                                <button 
-                                    onClick={() => navigateDay('prev')} 
-                                    disabled={activeDay === 0}
-                                    className={`p-1 rounded ${darkMode 
-                                        ? "bg-gray-700 text-white disabled:bg-gray-800 disabled:text-gray-600" 
-                                        : "bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"} ${activeDay === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                >
-                                    <ChevronLeft size={20} />
-                                </button>
-                                <button 
-                                    onClick={() => navigateDay('next')} 
-                                    disabled={activeDay === weatherData.forecast.forecastday.length - 1}
-                                    className={`p-1 rounded ${darkMode 
-                                        ? "bg-gray-700 text-white disabled:bg-gray-800 disabled:text-gray-600" 
-                                        : "bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"} ${activeDay === weatherData.forecast.forecastday.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                >
-                                    <ChevronRight size={20} />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                            {weatherData.forecast.forecastday[activeDay].hour
-                                .filter((_, index) => index % 3 === 0) // Show every 3 hours
-                                .map((hour, index) => (
-                                    <div 
-                                        key={index} 
-                                        className={`p-3 rounded-lg shadow text-center transition-all hover:shadow-md ${darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white bg-opacity-90 hover:bg-opacity-100"}`}
-                                    >
-                                        <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                                            {formatTime(hour.time)}
-                                        </p>
-                                        <img 
-                                            src={`https:${hour.condition.icon}`} 
-                                            alt={hour.condition.text} 
-                                            className="w-10 h-10 mx-auto my-1" 
-                                        />
-                                        <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
-                                            {convertTemp(hour.temp_c)}°{tempUnit}
-                                        </p>
-                                        <div className={`text-xs mt-1 ${darkMode ? "text-blue-400" : "text-blue-500"}`}>
-                                            {hour.chance_of_rain > 0 ? `${hour.chance_of_rain}% 💧` : ""}
-                                        </div>
-                                    </div>
-                                ))}
-                        </div>
-                    </div>
-
                     {/* Weekly Forecast */}
                     <div>
                         <h2 className={`text-xl font-semibold mb-3 ${darkMode ? "text-white" : "text-gray-800"}`}>
@@ -447,22 +386,21 @@ function Hero() {
                         </h2>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
                             {weatherData.forecast.forecastday.map((day, index) => (
-                                <div 
-                                    key={index} 
+                                <div
+                                    key={index}
                                     onClick={() => setActiveDay(index)}
-                                    className={`p-3 rounded-lg shadow text-center cursor-pointer transition-all ${
-                                        activeDay === index 
-                                            ? (darkMode ? "bg-indigo-900" : "bg-blue-100") 
-                                            : (darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white bg-opacity-90 hover:bg-opacity-100")
-                                    }`}
+                                    className={`p-3 rounded-lg shadow text-center cursor-pointer transition-all ${activeDay === index
+                                        ? (darkMode ? "bg-indigo-900" : "bg-blue-100")
+                                        : (darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white bg-opacity-90 hover:bg-opacity-100")
+                                        }`}
                                 >
                                     <p className={`text-sm font-medium ${darkMode ? (activeDay === index ? "text-white" : "text-gray-400") : (activeDay === index ? "text-blue-600" : "text-gray-500")}`}>
                                         {formatDate(day.date)}
                                     </p>
-                                    <img 
-                                        src={`https:${day.day.condition.icon}`} 
-                                        alt={day.day.condition.text} 
-                                        className="w-12 h-12 mx-auto my-1" 
+                                    <img
+                                        src={`https:${day.day.condition.icon}`}
+                                        alt={day.day.condition.text}
+                                        className="w-12 h-12 mx-auto my-1"
                                     />
                                     <div className="flex justify-center gap-2 text-sm">
                                         <span className={`font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
@@ -477,6 +415,59 @@ function Hero() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+                    {/* Hourly Forecast */}
+                    <div className="mb-6">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className={`text-xl font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                                {activeDay === 0 ? "Today's Forecast" : `Forecast for ${formatDate(weatherData.forecast.forecastday[activeDay].date)}`}
+                            </h2>
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => navigateDay('prev')}
+                                    disabled={activeDay === 0}
+                                    className={`p-1 rounded ${darkMode
+                                        ? "bg-gray-700 text-white disabled:bg-gray-800 disabled:text-gray-600"
+                                        : "bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"} ${activeDay === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    <ChevronLeft size={20} />
+                                </button>
+                                <button
+                                    onClick={() => navigateDay('next')}
+                                    disabled={activeDay === weatherData.forecast.forecastday.length - 1}
+                                    className={`p-1 rounded ${darkMode
+                                        ? "bg-gray-700 text-white disabled:bg-gray-800 disabled:text-gray-600"
+                                        : "bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"} ${activeDay === weatherData.forecast.forecastday.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    <ChevronRight size={20} />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                            {weatherData.forecast.forecastday[activeDay].hour
+                                .filter((_, index) => index % 3 === 0) // Show every 3 hours
+                                .map((hour, index) => (
+                                    <div
+                                        key={index}
+                                        className={`p-3 rounded-lg shadow text-center transition-all hover:shadow-md ${darkMode ? "bg-gray-800 hover:bg-gray-700" : "bg-white bg-opacity-90 hover:bg-opacity-100"}`}
+                                    >
+                                        <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                                            {formatTime(hour.time)}
+                                        </p>
+                                        <img
+                                            src={`https:${hour.condition.icon}`}
+                                            alt={hour.condition.text}
+                                            className="w-10 h-10 mx-auto my-1"
+                                        />
+                                        <p className={`font-semibold ${darkMode ? "text-white" : "text-gray-800"}`}>
+                                            {convertTemp(hour.temp_c)}°{tempUnit}
+                                        </p>
+                                        <div className={`text-xs mt-1 ${darkMode ? "text-blue-400" : "text-blue-500"}`}>
+                                            {hour.chance_of_rain > 0 ? `${hour.chance_of_rain}% 💧` : ""}
+                                        </div>
+                                    </div>
+                                ))}
                         </div>
                     </div>
                 </div>
