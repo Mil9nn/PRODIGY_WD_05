@@ -49,25 +49,13 @@ yarn
 
 The application uses the WeatherAPI service. You need to create an account on [WeatherAPI](https://www.weatherapi.com/) and get an API key.
 
-Create a `.env` file in the root directory of the project and add your API key:
+Open the `.env` file in the root directory of the project and add your API key:
 
 ```
-VITE_WEATHER_API_KEY=your_api_key_here
+VITE_WEATHER_API_KEY='your_api_key_here'
 ```
 
-### 4. Update the API key in the code
-
-In `src/components/Hero.jsx`, replace the hardcoded API key with the environment variable:
-
-```javascript
-// Change this line:
-const weather_api_key = '6146c7a50abb417f80f63318252303';
-
-// To this:
-const weather_api_key = import.meta.env.VITE_WEATHER_API_KEY;
-```
-
-### 5. Start the development server
+### 4. Start the development server
 
 Using npm:
 ```bash
